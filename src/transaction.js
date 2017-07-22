@@ -139,13 +139,6 @@ Transaction.fromBuffer = function(buffer, __noStrict) {
   var flag = buffer.readUInt8(offset + 1);
 
   var hasWitnesses = false;
-  if (
-    marker === Transaction.ADVANCED_TRANSACTION_MARKER &&
-    flag === Transaction.ADVANCED_TRANSACTION_FLAG
-  ) {
-    offset += 2;
-    hasWitnesses = true;
-  }
 
   var vinLen = readVarInt();
   for (var i = 0; i < vinLen; ++i) {
