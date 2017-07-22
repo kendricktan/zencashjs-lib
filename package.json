@@ -1,13 +1,13 @@
 {
-  "name": "bitcoinjs-lib",
+  "name": "zencashjs-lib",
   "version": "3.1.1",
-  "description": "Client-side Bitcoin JavaScript library",
+  "description": "Client-side ZenCash JavaScript library",
   "main": "./src/index.js",
   "engines": {
     "node": ">=4.0.0"
   },
   "keywords": [
-    "bitcoin",
+    "zencash",
     "browser",
     "client",
     "library"
@@ -32,6 +32,11 @@
       "name": "Stefan Thomas",
       "email": "justmoon@members.fsf.org",
       "url": "http://www.justmoon.net"
+    },
+    {
+      "name": "Kendrick Tan",
+      "email": "kendricktan0814@gmail.com",
+      "url": "http://kndrck.co"
     }
   ],
   "scripts": {
@@ -45,7 +50,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitcoinjs/bitcoinjs-lib.git"
+    "url": "https://github.com/kendricktan/zencashjs-lib"
   },
   "files": [
     "src"
