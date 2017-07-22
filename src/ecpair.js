@@ -35,7 +35,7 @@ function ECPair (d, Q, options) {
   }
 
   this.compressed = options.compressed === undefined ? true : options.compressed
-  this.network = options.network || NETWORKS.bitcoin
+  this.network = options.network || NETWORKS.zencash
 }
 
 Object.defineProperty(ECPair.prototype, 'Q', {
@@ -69,9 +69,9 @@ ECPair.fromWIF = function (string, network) {
 
     if (!network) throw new Error('Unknown network version')
 
-  // otherwise, assume a network object (or default to bitcoin)
+  // otherwise, assume a network object (or default to zencash)
   } else {
-    network = network || NETWORKS.bitcoin
+    network = network || NETWORKS.zencash
 
     if (version !== network.wif) throw new Error('Invalid network version')
   }
@@ -100,7 +100,7 @@ ECPair.makeRandom = function (options) {
   return new ECPair(d, null, options)
 }
 
-ECPair.prototype.getAddress = function () {
+ECPair.prototype.getAddress = function () {  
   return baddress.toBase58Check(bcrypto.hash160(this.getPublicKeyBuffer()), this.getNetwork().pubKeyHash)
 }
 

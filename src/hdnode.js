@@ -71,7 +71,7 @@ HDNode.fromBase58 = function (string, networks) {
 
   // otherwise, assume a network object (or default to bitcoin)
   } else {
-    network = networks || NETWORKS.bitcoin
+    network = networks || NETWORKS.zencash
   }
 
   if (version !== network.bip32.private &&
