@@ -21,23 +21,29 @@ check.toJSON = function () { return 'pubKeyHash output' }
 function encode (pubKeyHash) {
   typeforce(types.Hash160bit, pubKeyHash)
 
-  const buf = new Buffer(4);
-  buf.writeUInt32LE(139430)
+  var buf = new Buffer(4);    
+  buf.writeUInt32LE(139300)
+
+  if (buf[3] === 0x00){
+    var temp_buf = new Buffer(3);
+    temp_buf.fill(buf, 0, 3)
+    buf = temp_buf
+  }  
 
   return bscript.compile([
     OPS.OP_DUP,
     OPS.OP_HASH160,
     pubKeyHash,
     OPS.OP_EQUALVERIFY,
-    OPS.OP_CHECKSIG,    
-    new Buffer('0000000305525f92bd4b01de07c2ec7a378e2047b56207743ab64590c4a096cd', 'hex').reverse(),
+    OPS.OP_CHECKSIG,
+    new Buffer('000000019a3c363e4cabf1d02c12cfbfdc6d61f33174df2f4066d01dc392498e', 'hex').reverse(),
     // 139300 looks like this: 0x03 0x022024        
     //new Buffer('0' + (3).toString(16), 'hex'), LITTLE INDIAN
     // BUFFER STUFF    
-    new Buffer([0x14, 0x1f, 0x02]),
+    buf,
     // new Buffer([0x14, 0x1f, 0x02]),
     //new Buffer('0' + (139430).toString(16), 'hex'),
-    OPS.OP_NOP5
+    OPS.OP_NOP5 // OPS.OP_NOP5 == OPS.
   ])
 }
 

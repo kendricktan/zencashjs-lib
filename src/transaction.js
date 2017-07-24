@@ -311,7 +311,7 @@ Transaction.prototype.joinSplitByteLength = function() {
     return 0;
   }
 
-  var pubkeySigLength = (this.joinsplits.length > 0) ? (32 + 64) : 0;
+  var pubkeySigLength = this.joinsplits.length > 0 ? 32 + 64 : 0;
   return (
     bufferutils.varIntSize(this.joinsplits.length) +
     this.joinsplits.reduce(function(sum, joinsplit) {
@@ -329,8 +329,9 @@ Transaction.prototype.joinSplitByteLength = function() {
         33 * 7 +
         joinsplit.ciphertexts.length * Transaction.ZENCASH_NOTECIPHERTEXT_SIZE
       );
-    }, 0) + pubkeySigLength
-  )
+    }, 0) +
+    pubkeySigLength
+  );
 };
 
 Transaction.prototype.__byteLength = function(__allowWitness) {

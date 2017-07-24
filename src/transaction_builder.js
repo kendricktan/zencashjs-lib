@@ -7,7 +7,7 @@ var ops = require('bitcoin-ops')
 var typeforce = require('typeforce')
 var types = require('./types')
 var scriptTypes = bscript.types
-var SIGNABLE = [bscript.types.P2PKH, bscript.types.P2PK, bscript.types.MULTISIG]
+var SIGNABLE = [bscript.types.P2PKHR, bscript.types.P2PKH, bscript.types.P2PK, bscript.types.MULTISIG]
 var P2SH = SIGNABLE.concat([bscript.types.P2WPKH, bscript.types.P2WSH])
 
 var ECPair = require('./ecpair')
@@ -276,6 +276,7 @@ function prepareInput (input, kpPubKey, redeemScript, witnessValue, witnessScrip
 
   var signType
   var signScript
+  
 
   if (redeemScript && witnessScript) {
     redeemScriptHash = bcrypto.hash160(redeemScript)
@@ -333,12 +334,12 @@ function prepareInput (input, kpPubKey, redeemScript, witnessValue, witnessScrip
     signType = prevOutType
     signScript = prevOutScript
   } else {
-    prevOutScript = bscript.pubKeyHash.output.encode(bcrypto.hash160(kpPubKey))
+    prevOutScript = bscript.pubKeyHash.output.encode(bcrypto.hash160(kpPubKey))    
     expanded = expandOutput(prevOutScript, scriptTypes.P2PKH, kpPubKey)
-    prevOutType = scriptTypes.P2PKH
+    prevOutType = scriptTypes.P2PKHR
     witness = false
     signType = prevOutType
-    signScript = prevOutScript
+    signScript = prevOutScript    
   }
 
   if (witness && !types.Satoshi(witnessValue)) {
@@ -369,7 +370,7 @@ function prepareInput (input, kpPubKey, redeemScript, witnessValue, witnessScrip
 }
 
 function buildStack (type, signatures, pubKeys, allowIncomplete) {
-  if (type === scriptTypes.P2PKH) {
+  if (type === scriptTypes.P2PKH || type === scriptTypes.P2PKHR) {
     if (signatures.length === 1 && Buffer.isBuffer(signatures[0]) && pubKeys.length === 1) return bscript.pubKeyHash.input.encodeStack(signatures[0], pubKeys[0])
   } else if (type === scriptTypes.P2PK) {
     if (signatures.length === 1 && Buffer.isBuffer(signatures[0])) return bscript.pubKey.input.encodeStack(signatures[0])
@@ -555,9 +556,9 @@ TransactionBuilder.prototype.__addInputUnsafe = function (txHash, vout, options)
   if (options.value !== undefined) {
     input.value = options.value
   }
-
+  
   // derive what we can from the previous transactions output script
-  if (!input.prevOutScript && options.prevOutScript) {
+  if (!input.prevOutScript && options.prevOutScript) {    
     var prevOutType
 
     if (!input.pubKeys && !input.signatures) {
@@ -573,7 +574,7 @@ TransactionBuilder.prototype.__addInputUnsafe = function (txHash, vout, options)
 
     input.prevOutScript = options.prevOutScript
     input.prevOutType = prevOutType || bscript.classifyOutput(options.prevOutScript)
-  }
+  }  
 
   var vin = this.tx.addInput(txHash, vout, options.sequence, options.scriptSig)
   this.inputs[vin] = input
@@ -612,15 +613,16 @@ TransactionBuilder.prototype.__build = function (allowIncomplete) {
   // Create script signatures from inputs
   this.inputs.forEach(function (input, i) {
     var scriptType = input.witnessScriptType || input.redeemScriptType || input.prevOutType
+    
     if (!scriptType && !allowIncomplete) throw new Error('Transaction is not complete')
-    var result = buildInput(input, allowIncomplete)
+    var result = buildInput(input, allowIncomplete)    
 
     // skip if no result
     if (!allowIncomplete) {
       if (SIGNABLE.indexOf(result.type) === -1 && result.type !== bscript.types.P2WPKH) {
         throw new Error(result.type + ' not supported')
       }
-    }
+    }    
 
     tx.setInputScript(i, result.script)
     tx.setWitness(i, result.witness)

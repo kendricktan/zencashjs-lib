@@ -10,8 +10,6 @@ module.exports = {
     },
     pubKeyHash: 0x2089,    
     scriptHash: 0x2096,
-    wif: 0x80,
-    zcPaymentAddress: 0x169a,
-    zcSpendingKey: 0xab36
+    wif: 0x80
   }
 }

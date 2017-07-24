@@ -14,6 +14,7 @@ var types = {
   NULLDATA: 'nulldata',
   P2PK: 'pubkey',
   P2PKH: 'pubkeyhash',
+  P2PKHR: 'pubkeyhashreplay',
   P2SH: 'scripthash',
   P2WPKH: 'witnesspubkeyhash',
   P2WSH: 'witnessscripthash',
